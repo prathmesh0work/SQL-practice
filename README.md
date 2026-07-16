@@ -1,6 +1,6 @@
 # SQL Quest — Subquery Practice
 
-A small e-commerce-style MySQL schema built to practice **subqueries** — nested, correlated, `EXISTS`/`NOT EXISTS`, `IN`/`NOT IN`, and derived tables.
+A small e-commerce-style MySQL schema I'm using as an ongoing daily practice ground — subqueries today, joins/window functions/aggregations as I go. New queries get added regularly, so this repo grows over time rather than being a one-off snapshot.
 
 ## Schema
 
@@ -26,10 +26,13 @@ A small e-commerce-style MySQL schema built to practice **subqueries** — neste
 ```
 sql-practice/
 ├── schema/
-│   └── create_tables.sql      # CREATE DATABASE, all tables + sample data
+│   └── create_tables.sql              # CREATE DATABASE, all tables + sample data
 └── queries/
-    └── practice_queries.sql   # 13 practice queries, commented by topic
+    ├── 2026-07-16_subqueries.sql      # first session: subqueries, EXISTS, derived tables
+    └── ...                            # one file per session, added as I practice
 ```
+
+**Naming convention for new sessions:** `YYYY-MM-DD_topic.sql` (e.g. `2026-07-20_joins.sql`, `2026-07-22_window_functions.sql`). Keeps each day's practice self-contained and makes the commit history double as a practice log.
 
 ## How to run
 
@@ -37,7 +40,10 @@ sql-practice/
    ```sql
    source schema/create_tables.sql;
    ```
-2. Then run any query from `queries/practice_queries.sql` (each one is self-contained after step 1).
+2. Then run any query from a file inside `queries/` (each session file is self-contained after step 1):
+   ```sql
+   source queries/2026-07-16_subqueries.sql;
+   ```
 
 ## What's covered
 
@@ -54,3 +60,9 @@ sql-practice/
 
 - Queries 5 and 8 return the same result (products never ordered) using two different techniques — `NOT IN` vs. `NOT EXISTS` — kept side by side intentionally for comparison.
 - Queries 3 and 11 also solve the same problem (customers with above-average order counts) two different ways: `HAVING` vs. a derived table with `WHERE`.
+
+## Practice Log
+
+| Date | File | Topics |
+|---|---|---|
+| 2026-07-16 | `queries/2026-07-16_subqueries.sql` | Subqueries, correlated subqueries, EXISTS/NOT EXISTS, derived tables |
