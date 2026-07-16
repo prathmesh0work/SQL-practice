@@ -1,0 +1,193 @@
+-- ============================================
+-- SQL Quest: Practice Queries
+-- ============================================
+-- Run schema/create_tables.sql first.
+-- Topics covered: subqueries in WHERE/HAVING/SELECT,
+-- correlated subqueries, EXISTS / NOT EXISTS, IN / NOT IN,
+-- nested (multi-level) subqueries, derived tables.
+-- ============================================
+
+USE sql_quest;
+
+
+-- --------------------------------------------
+-- 1. Products priced above the average price
+--    (simple subquery in WHERE)
+-- --------------------------------------------
+SELECT product_name, price
+FROM products
+WHERE price > (SELECT AVG(price) FROM products);
+
+
+-- --------------------------------------------
+-- 2. Products with stock below the average stock
+--    (simple subquery in WHERE)
+-- --------------------------------------------
+SELECT product_name, stock
+FROM products
+WHERE stock < (SELECT AVG(stock) FROM products);
+
+
+-- --------------------------------------------
+-- 3. Customers whose total order count is above
+--    the average order count per customer
+--    (subquery in HAVING + nested derived table)
+-- --------------------------------------------
+SELECT c.customer_id,
+       c.customer_name,
+       COUNT(o.order_id) AS total_orders
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+HAVING COUNT(o.order_id) >
+    (SELECT AVG(total_orders)
+     FROM (SELECT customer_id, COUNT(*) AS total_orders
+           FROM orders
+           GROUP BY customer_id) AS customer_order);
+
+
+-- --------------------------------------------
+-- 4. Customers who have never placed an order
+--    (NOT IN)
+-- --------------------------------------------
+SELECT customer_id, customer_name
+FROM customers
+WHERE customer_id NOT IN (SELECT customer_id FROM orders);
+
+
+-- --------------------------------------------
+-- 5. Products that have never been ordered
+--    (NOT IN)
+-- --------------------------------------------
+SELECT product_id, product_name
+FROM products
+WHERE product_id NOT IN (SELECT product_id FROM order_items);
+
+
+-- --------------------------------------------
+-- 6. Customers who made a payment over 50,000
+--    (IN with a join inside the subquery)
+-- --------------------------------------------
+SELECT customer_name, customer_id
+FROM customers
+WHERE customer_id IN (
+    SELECT o.customer_id
+    FROM orders o
+    JOIN payments p ON o.order_id = p.order_id
+    WHERE amount > 50000);
+
+
+-- --------------------------------------------
+-- 7. Customers who have placed at least one order
+--    (correlated EXISTS)
+-- --------------------------------------------
+SELECT customer_id, customer_name
+FROM customers c
+WHERE EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id);
+
+
+-- --------------------------------------------
+-- 8. Products that have never been ordered
+--    (correlated NOT EXISTS -- same result as query 5,
+--     different technique)
+-- --------------------------------------------
+SELECT product_id, product_name
+FROM products p
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM order_items o
+    WHERE o.product_id = p.product_id);
+
+
+-- --------------------------------------------
+-- 9. Products priced above the average price
+--    within their own category
+--    (correlated subquery referencing outer category_id)
+-- --------------------------------------------
+SELECT product_id, product_name, price
+FROM products p
+WHERE price > (
+    SELECT AVG(p2.price)
+    FROM products p2
+    WHERE p2.category_id = p.category_id);
+
+
+-- --------------------------------------------
+-- 10. Customers whose total spending is above the
+--     average total spending across all customers
+--     (derived table + nested subquery for the average)
+-- --------------------------------------------
+SELECT *
+FROM (
+    SELECT c.customer_id,
+           c.customer_name,
+           SUM(p.amount) AS total_spending
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    JOIN payments p ON o.order_id = p.order_id
+    GROUP BY c.customer_id, c.customer_name) AS customer_totals
+WHERE total_spending > (
+    SELECT AVG(total_spending)
+    FROM (
+        SELECT c.customer_id,
+               SUM(p.amount) AS total_spending
+        FROM customers c
+        JOIN orders o ON c.customer_id = o.customer_id
+        JOIN payments p ON o.order_id = p.order_id
+        GROUP BY c.customer_id) AS avg_totals);
+
+
+-- --------------------------------------------
+-- 11. Customers with total orders above the average
+--     order count (derived table version -- same idea
+--     as query 3, built with WHERE instead of HAVING)
+-- --------------------------------------------
+SELECT customer_id, customer_name, total_orders
+FROM (
+    SELECT c.customer_id,
+           c.customer_name,
+           COUNT(order_id) AS total_orders
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id, c.customer_name) AS total_orders
+WHERE total_orders > (
+    SELECT AVG(total_orders)
+    FROM (
+        SELECT c.customer_id,
+               COUNT(order_id) AS total_orders
+        FROM customers c
+        JOIN orders o ON c.customer_id = o.customer_id
+        GROUP BY c.customer_id) AS avg_totals);
+
+
+-- --------------------------------------------
+-- 12. Every customer with their total order count
+--     (correlated scalar subquery in SELECT --
+--      keeps customers with zero orders too)
+-- --------------------------------------------
+SELECT c.customer_id,
+       c.customer_name,
+       (SELECT COUNT(order_id)
+        FROM orders o
+        WHERE o.customer_id = c.customer_id) AS total_orders
+FROM customers c;
+
+
+-- --------------------------------------------
+-- 13. Every customer with their total order count
+--     AND total amount spent
+--     (two correlated scalar subqueries in SELECT)
+-- --------------------------------------------
+SELECT c.customer_id,
+       c.customer_name,
+       (SELECT COUNT(order_id)
+        FROM orders o
+        WHERE c.customer_id = o.customer_id) AS total_orders,
+       (SELECT SUM(amount)
+        FROM orders o
+        JOIN payments p ON o.order_id = p.order_id
+        WHERE o.customer_id = c.customer_id) AS total_spend
+FROM customers c;
