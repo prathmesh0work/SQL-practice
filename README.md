@@ -1,6 +1,6 @@
-# SQL Quest — Subquery Practice
+# SQL Quest — Advanced SQL Practice
 
-A small e-commerce-style MySQL schema I'm using as an ongoing daily practice ground — subqueries today, joins/window functions/aggregations as I go. New queries get added regularly, so this repo grows over time rather than being a one-off snapshot.
+A small e-commerce-style MySQL schema I'm using as an ongoing daily practice ground — subqueries, CTEs, and window functions so far, with joins/aggregations and more to come. New queries get added regularly, so this repo grows over time rather than being a one-off snapshot.
 
 ## Schema
 
@@ -26,10 +26,11 @@ A small e-commerce-style MySQL schema I'm using as an ongoing daily practice gro
 ```
 sql-practice/
 ├── schema/
-│   └── create_tables.sql              # CREATE DATABASE, all tables + sample data
+│   └── create_tables.sql                    # CREATE DATABASE, all tables + sample data
 └── queries/
-    ├── 2026-07-16_subqueries.sql      # first session: subqueries, EXISTS, derived tables
-    └── ...                            # one file per session, added as I practice
+    ├── 2026-07-16_subqueries.sql            # session 1: subqueries, EXISTS, derived tables
+    ├── 2026-07-17_ctes_window_functions.sql # session 2: CTEs, window functions
+    └── ...                                  # one file per session, added as I practice
 ```
 
 **Naming convention for new sessions:** `YYYY-MM-DD_topic.sql` (e.g. `2026-07-20_joins.sql`, `2026-07-22_window_functions.sql`). Keeps each day's practice self-contained and makes the commit history double as a practice log.
@@ -55,6 +56,9 @@ sql-practice/
 - Correlated subquery comparing a row to the average **within its own group** (e.g. price vs. average price in the same category)
 - Derived tables (subquery in `FROM`)
 - Correlated scalar subqueries in `SELECT` (per-row calculated columns)
+- CTEs (`WITH`) — single and chained/multiple CTEs in one query
+- Window functions — `AVG() OVER()`, `RANK() OVER()`, `ROW_NUMBER() OVER()`, `LAG() OVER()`, with and without `PARTITION BY`
+- Filtering on a window function's result via an outer CTE (since `RANK()` etc. can't go directly in `WHERE`)
 
 ## Notes
 
@@ -66,3 +70,4 @@ sql-practice/
 | Date | File | Topics |
 |---|---|---|
 | 2026-07-16 | `queries/2026-07-16_subqueries.sql` | Subqueries, correlated subqueries, EXISTS/NOT EXISTS, derived tables |
+| 2026-07-17 | `queries/2026-07-17_ctes_window_functions.sql` | CTEs (single & chained), CTE + subquery, window functions: `AVG() OVER()`, `RANK()`, `ROW_NUMBER()`, `LAG()`, `PARTITION BY` |
