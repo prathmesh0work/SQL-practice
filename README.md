@@ -24,13 +24,11 @@ A small e-commerce-style MySQL schema I'm using as an ongoing daily practice gro
 ## Files
 
 ```
-sql-practice/
-├── schema/
-│   └── create_tables.sql                    # CREATE DATABASE, all tables + sample data
-└── queries/
-    ├── 2026-07-16_subqueries.sql            # session 1: subqueries, EXISTS, derived tables
-    ├── 2026-07-17_ctes_window_functions.sql # session 2: CTEs, window functions
-    └── ...                                  # one file per session, added as I practice
+SQL-practice/
+├── create_tables.sql                    # CREATE DATABASE, all tables + sample data
+├── 2026-07-16_subqueries.sql            # session 1: subqueries, EXISTS, derived tables
+├── 2026-07-17_ctes_window_functions.sql # session 2: CTEs, window functions
+└── ...                                  # one file per session, added as I practice
 ```
 
 **Naming convention for new sessions:** `YYYY-MM-DD_topic.sql` (e.g. `2026-07-20_joins.sql`, `2026-07-22_window_functions.sql`). Keeps each day's practice self-contained and makes the commit history double as a practice log.
@@ -39,11 +37,11 @@ sql-practice/
 
 1. Open MySQL and run the schema file to create the database and load sample data:
    ```sql
-   source schema/create_tables.sql;
+   source create_tables.sql;
    ```
-2. Then run any query from a file inside `queries/` (each session file is self-contained after step 1):
+2. Then run any session query file (each is self-contained after step 1):
    ```sql
-   source queries/2026-07-16_subqueries.sql;
+   source 2026-07-16_subqueries.sql;
    ```
 
 ## What's covered
@@ -69,5 +67,5 @@ sql-practice/
 
 | Date | File | Topics |
 |---|---|---|
-| 2026-07-16 | `queries/2026-07-16_subqueries.sql` | Subqueries, correlated subqueries, EXISTS/NOT EXISTS, derived tables |
-| 2026-07-17 | `queries/2026-07-17_ctes_window_functions.sql` | CTEs (single & chained), CTE + subquery, window functions: `AVG() OVER()`, `RANK()`, `ROW_NUMBER()`, `LAG()`, `PARTITION BY` |
+| 2026-07-16 | `2026-07-16_subqueries.sql` | Subqueries, correlated subqueries, EXISTS/NOT EXISTS, derived tables |
+| 2026-07-17 | `2026-07-17_ctes_window_functions.sql` | CTEs (single & chained), CTE + subquery, window functions: `AVG() OVER()`, `RANK()`, `ROW_NUMBER()`, `LAG()`, `PARTITION BY` |
