@@ -1,0 +1,267 @@
+-- ============================================================
+-- SQL Window Functions Practice
+-- Database: sql_quest
+-- Topics:
+-- 1. LAG()
+-- 2. LEAD()
+-- 3. Running Total
+-- 4. Next Order Details
+-- 5. Days Until Next Order
+-- 6. Moving Average (2 Orders)
+-- 7. Moving Average (3 Orders)
+-- 8. Moving Average (4 Orders)
+-- ============================================================
+
+USE sql_quest;
+
+-- ============================================================
+-- Question 1
+-- Find the previous order amount for each customer
+-- and calculate the difference from the current order.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    LAG(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS previous_amount,
+
+    amount -
+    LAG(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS difference
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 2
+-- Find the next order amount for each customer
+-- and calculate the difference to the next order.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    LEAD(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_amount,
+
+    LEAD(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) - amount AS difference_to_next
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 3
+-- Calculate the running total of amount spent
+-- by each customer.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    SUM(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS running_total
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 4
+-- Display the next order amount and next order date
+-- for every customer.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    LEAD(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_order_amount,
+
+    LEAD(order_date) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_order_date
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 5
+-- Calculate the number of days until the customer's
+-- next order.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        customer_id,
+        order_date
+    FROM orders
+)
+
+SELECT
+    customer_id,
+    order_date,
+
+    LEAD(order_date) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_order,
+
+    DATEDIFF(
+        LEAD(order_date) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ),
+        order_date
+    ) AS days_until_next_order
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 6
+-- Calculate a 2-order moving average
+-- (Current + Previous Order).
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    AVG(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+    ) AS moving_average_2
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 7
+-- Calculate a 3-order moving average.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    AVG(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS moving_average_3
+
+FROM customer_orders;
+
+
+-- ============================================================
+-- Question 8
+-- Calculate a 4-order moving average.
+-- ============================================================
+
+WITH customer_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_date,
+        p.amount
+    FROM orders o
+    JOIN payments p
+        ON o.order_id = p.order_id
+)
+
+SELECT
+    customer_id,
+    order_date,
+    amount,
+
+    AVG(amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN 3 PRECEDING AND CURRENT ROW
+    ) AS moving_average_4
+
+FROM customer_orders;
