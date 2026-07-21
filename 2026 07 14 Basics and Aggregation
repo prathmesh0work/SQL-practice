@@ -1,0 +1,142 @@
+-- ============================================
+-- SQL Quest: SQL Basics & Aggregations
+-- ============================================
+-- Run create_tables.sql first.
+-- Topics covered: SELECT, WHERE, ORDER BY, LIMIT, DISTINCT,
+-- COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING.
+-- ============================================
+
+USE sql_quest;
+
+
+-- --------------------------------------------
+-- 1. All customers from Mumbai
+--    (basic SELECT + WHERE)
+-- --------------------------------------------
+SELECT customer_id, customer_name, city
+FROM customers
+WHERE city = 'Mumbai';
+
+
+-- --------------------------------------------
+-- 2. Products under 5000, cheapest first
+--    (WHERE with a numeric comparison + ORDER BY ascending)
+-- --------------------------------------------
+SELECT product_name, price
+FROM products
+WHERE price < 5000
+ORDER BY price ASC;
+
+
+-- --------------------------------------------
+-- 3. Top 3 most expensive products
+--    (ORDER BY descending + LIMIT)
+-- --------------------------------------------
+SELECT product_name, price
+FROM products
+ORDER BY price DESC
+LIMIT 3;
+
+
+-- --------------------------------------------
+-- 4. Distinct cities customers are signed up from
+--    (DISTINCT)
+-- --------------------------------------------
+SELECT DISTINCT city
+FROM customers;
+
+
+-- --------------------------------------------
+-- 5. Distinct payment methods used
+--    (DISTINCT on a different table)
+-- --------------------------------------------
+SELECT DISTINCT payment_method
+FROM payments;
+
+
+-- --------------------------------------------
+-- 6. Orders that are either Delivered or Pending
+--    (WHERE ... IN with literal values, not a subquery)
+-- --------------------------------------------
+SELECT order_id, customer_id, status
+FROM orders
+WHERE status IN ('Delivered', 'Pending');
+
+
+-- --------------------------------------------
+-- 7. Customers aged between 25 and 35
+--    (WHERE ... BETWEEN)
+-- --------------------------------------------
+SELECT customer_name, age
+FROM customers
+WHERE age BETWEEN 25 AND 35
+ORDER BY age;
+
+
+-- --------------------------------------------
+-- 8. Total number of orders placed
+--    (COUNT)
+-- --------------------------------------------
+SELECT COUNT(*) AS total_orders
+FROM orders;
+
+
+-- --------------------------------------------
+-- 9. Total revenue collected across all payments
+--    (SUM)
+-- --------------------------------------------
+SELECT SUM(amount) AS total_revenue
+FROM payments;
+
+
+-- --------------------------------------------
+-- 10. Average, minimum, and maximum product price
+--     (AVG, MIN, MAX together)
+-- --------------------------------------------
+SELECT AVG(price) AS avg_price,
+       MIN(price) AS min_price,
+       MAX(price) AS max_price
+FROM products;
+
+
+-- --------------------------------------------
+-- 11. Number of orders placed by each customer
+--     (GROUP BY + COUNT)
+-- --------------------------------------------
+SELECT customer_id, COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+ORDER BY total_orders DESC;
+
+
+-- --------------------------------------------
+-- 12. Total stock held per category
+--     (GROUP BY on a joined column)
+-- --------------------------------------------
+SELECT c.category_name, SUM(p.stock) AS total_stock
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+GROUP BY c.category_name;
+
+
+-- --------------------------------------------
+-- 13. Customers who placed more than 1 order
+--     (GROUP BY + HAVING -- filters on the aggregated result,
+--      which is why it can't just be a WHERE clause)
+-- --------------------------------------------
+SELECT customer_id, COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
+
+
+-- --------------------------------------------
+-- 14. Categories with an average product price above 5000
+--     (GROUP BY + HAVING on an aggregate other than COUNT)
+-- --------------------------------------------
+SELECT c.category_name, AVG(p.price) AS avg_price
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+GROUP BY c.category_name
+HAVING AVG(p.price) > 5000
+ORDER BY avg_price DESC;
