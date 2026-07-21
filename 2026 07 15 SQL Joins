@@ -1,0 +1,136 @@
+-- ============================================
+-- SQL Quest: Joins
+-- ============================================
+-- Run create_tables.sql first.
+-- Topics covered: INNER JOIN, LEFT JOIN, multi-table joins,
+-- LEFT JOIN + IS NULL (anti-join pattern), self-contained
+-- joins without subqueries or CTEs.
+-- ============================================
+
+USE sql_quest;
+
+
+-- --------------------------------------------
+-- 1. Every order with the customer who placed it
+--    (basic INNER JOIN, two tables)
+-- --------------------------------------------
+SELECT o.order_id, c.customer_name, o.order_date, o.status
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id;
+
+
+-- --------------------------------------------
+-- 2. Every product with its category name
+--    (INNER JOIN, two tables)
+-- --------------------------------------------
+SELECT p.product_name, p.price, c.category_name
+FROM products p
+INNER JOIN categories c ON p.category_id = c.category_id;
+
+
+-- --------------------------------------------
+-- 3. Every order item with the product name and order date
+--    (INNER JOIN, two tables, different FK direction)
+-- --------------------------------------------
+SELECT oi.item_id, o.order_date, p.product_name, oi.quantity
+FROM order_items oi
+INNER JOIN orders o ON oi.order_id = o.order_id
+INNER JOIN products p ON oi.product_id = p.product_id;
+
+
+-- --------------------------------------------
+-- 4. Every payment with the customer who made it
+--    (INNER JOIN chained across three tables)
+-- --------------------------------------------
+SELECT pay.payment_id, c.customer_name, pay.amount, pay.payment_method
+FROM payments pay
+INNER JOIN orders o ON pay.order_id = o.order_id
+INNER JOIN customers c ON o.customer_id = c.customer_id;
+
+
+-- --------------------------------------------
+-- 5. Full order detail: customer, product, quantity, and category
+--    (multi-table INNER JOIN across four tables)
+-- --------------------------------------------
+SELECT o.order_id, c.customer_name, p.product_name,
+       cat.category_name, oi.quantity
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+JOIN categories cat ON p.category_id = cat.category_id;
+
+
+-- --------------------------------------------
+-- 6. All customers, with their orders if they have any
+--    (LEFT JOIN -- keeps customers with zero orders, unlike INNER JOIN)
+-- --------------------------------------------
+SELECT c.customer_id, c.customer_name, o.order_id, o.order_date
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id;
+
+
+-- --------------------------------------------
+-- 7. Customers who have never placed an order
+--    (LEFT JOIN + IS NULL -- classic "anti-join" pattern,
+--     an alternative to NOT IN / NOT EXISTS)
+-- --------------------------------------------
+SELECT c.customer_id, c.customer_name
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+
+-- --------------------------------------------
+-- 8. Products that have never appeared in an order
+--    (LEFT JOIN + IS NULL, same pattern applied to products)
+-- --------------------------------------------
+SELECT p.product_id, p.product_name
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.item_id IS NULL;
+
+
+-- --------------------------------------------
+-- 9. All orders, with payment info if a payment exists
+--    (LEFT JOIN -- some orders are Pending/Cancelled with no payment yet)
+-- --------------------------------------------
+SELECT o.order_id, o.status, pay.amount, pay.payment_method
+FROM orders o
+LEFT JOIN payments pay ON o.order_id = pay.order_id;
+
+
+-- --------------------------------------------
+-- 10. Orders that don't have a payment yet
+--     (LEFT JOIN + IS NULL, useful for spotting unpaid/cancelled orders)
+-- --------------------------------------------
+SELECT o.order_id, o.customer_id, o.status
+FROM orders o
+LEFT JOIN payments pay ON o.order_id = pay.order_id
+WHERE pay.payment_id IS NULL;
+
+
+-- --------------------------------------------
+-- 11. Revenue per category
+--     (multi-table JOIN + GROUP BY combined)
+-- --------------------------------------------
+SELECT cat.category_name,
+       SUM(oi.quantity * p.price) AS category_revenue
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+JOIN categories cat ON p.category_id = cat.category_id
+GROUP BY cat.category_name
+ORDER BY category_revenue DESC;
+
+
+-- --------------------------------------------
+-- 12. Number of distinct products each customer has ordered
+--     (multi-table JOIN + GROUP BY + COUNT DISTINCT)
+-- --------------------------------------------
+SELECT c.customer_id, c.customer_name,
+       COUNT(DISTINCT oi.product_id) AS distinct_products_bought
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY distinct_products_bought DESC;
