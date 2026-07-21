@@ -33,6 +33,7 @@ SQL-Quest/
 ├── 2026-07-16_subqueries.sql
 ├── 2026-07-17_ctes_window_functions.sql
 ├── 2026-07-20_window_functions.sql
+├── 2026-07-21_advanced_window_functions.sql
 └── ...
 ```
 
@@ -134,6 +135,18 @@ source 2026-07-20_window_functions.sql;
 - AVG() OVER()
 - SUM() OVER()
 
+### Value Functions
+
+- FIRST_VALUE()
+- LAST_VALUE()
+- NTH_VALUE()
+
+### Distribution Functions
+
+- NTILE()
+- CUME_DIST()
+- PERCENT_RANK()
+
 ### Running Calculations
 
 - Running Total
@@ -150,6 +163,7 @@ source 2026-07-20_window_functions.sql;
 - PARTITION BY
 - ORDER BY
 - ROWS BETWEEN ... PRECEDING AND CURRENT ROW
+- ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
 
 ## Date Functions
 
@@ -166,6 +180,7 @@ source 2026-07-20_window_functions.sql;
 | 2026-07-16 | `2026-07-16_subqueries.sql` | Subqueries, EXISTS, NOT EXISTS, Derived Tables |
 | 2026-07-17 | `2026-07-17_ctes_window_functions.sql` | CTEs, AVG() OVER(), RANK(), ROW_NUMBER(), LAG(), PARTITION BY |
 | 2026-07-20 | `2026-07-20_window_functions.sql` | LEAD(), Running Total, Moving Average, Date Difference, Window Frames |
+| 2026-07-21 | `2026-07-21_advanced_window_functions.sql` | FIRST_VALUE(), LAST_VALUE(), NTH_VALUE(), NTILE(), CUME_DIST(), PERCENT_RANK(), combined RANK/DENSE_RANK/LAG across joined CTEs |
 
 ---
 
@@ -184,6 +199,12 @@ source 2026-07-20_window_functions.sql;
 - Customer spending rankings
 - Ranking customers within each city
 - Overall average customer spending
+- First and last order amount per customer using `FIRST_VALUE()` / `LAST_VALUE()`
+- Second and third order amount per customer using `NTH_VALUE()`
+- Splitting customers into spending quartiles using `NTILE()`
+- Cumulative spending distribution using `CUME_DIST()`
+- Top-spending percentile customers using `PERCENT_RANK()`
+- Combined spending report: overall rank, city rank, and gap to next-highest spender
 
 ---
 
