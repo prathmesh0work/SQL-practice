@@ -30,10 +30,12 @@ The database contains six related tables that model a simple online store.
 ```
 SQL-Quest/
 ├── create_tables.sql
-├── 2026-07-16_subqueries.sql
-├── 2026-07-17_ctes_window_functions.sql
-├── 2026-07-20_window_functions.sql
-├── 2026-07-21_advanced_window_functions.sql
+├── 2026 07 14_Basics and Aggregations.sql
+├── 2026 07 15 SQL Joins.sql
+├── 2026 07 16 subqueries.sql
+├── 2026 07 17 ctes window functions.sql
+├── 2026 07 20 window functions.sql
+├── 2026 07 21 advanced window functions.sql
 └── ...
 ```
 
@@ -177,6 +179,8 @@ source 2026-07-20_window_functions.sql;
 
 | Date | File | Topics |
 |------|------|--------|
+| 2026-07-14 | `2026-07-14_basics_aggregations.sql` | SELECT, WHERE, ORDER BY, LIMIT, DISTINCT, COUNT(), SUM(), AVG(), MIN(), MAX(), GROUP BY, HAVING |
+| 2026-07-15 | `2026-07-15_joins.sql` | INNER JOIN, LEFT JOIN, multi-table joins, LEFT JOIN + IS NULL (anti-join pattern) |
 | 2026-07-16 | `2026-07-16_subqueries.sql` | Subqueries, EXISTS, NOT EXISTS, Derived Tables |
 | 2026-07-17 | `2026-07-17_ctes_window_functions.sql` | CTEs, AVG() OVER(), RANK(), ROW_NUMBER(), LAG(), PARTITION BY |
 | 2026-07-20 | `2026-07-20_window_functions.sql` | LEAD(), Running Total, Moving Average, Date Difference, Window Frames |
@@ -205,6 +209,16 @@ source 2026-07-20_window_functions.sql;
 - Cumulative spending distribution using `CUME_DIST()`
 - Top-spending percentile customers using `PERCENT_RANK()`
 - Combined spending report: overall rank, city rank, and gap to next-highest spender
+- Filtering customers by city and age range
+- Top 3 most expensive products
+- Distinct cities and payment methods in use
+- Orders placed per customer, filtered to repeat customers only
+- Average, min, and max product price by category
+- Full order detail combining customer, product, category, and quantity
+- Customers who have never placed an order, using LEFT JOIN + IS NULL
+- Orders that don't have a payment yet
+- Revenue per category using a multi-table join + GROUP BY
+- Number of distinct products each customer has bought
 
 ---
 
