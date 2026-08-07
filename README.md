@@ -37,7 +37,7 @@ SQL-Quest/
 ├── 2026 07 20 window functions.sql
 ├── 2026 07 21 advanced window functions.sql
 ├── 2026 08 05 advanced window functions.sql
-├── 
+├── 2026 08 07 top_customers_and_products_window_functions.sql
 ```
 
 **Naming Convention**
