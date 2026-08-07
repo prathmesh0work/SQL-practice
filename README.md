@@ -36,7 +36,8 @@ SQL-Quest/
 ├── 2026 07 17 ctes window functions.sql
 ├── 2026 07 20 window functions.sql
 ├── 2026 07 21 advanced window functions.sql
-└── 2026 08 05 advanced window functions.sql
+├── 2026 08 05 advanced window functions.sql
+├── 
 ```
 
 **Naming Convention**
