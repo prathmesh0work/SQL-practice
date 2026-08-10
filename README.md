@@ -30,14 +30,14 @@ The database contains six related tables that model a simple online store.
 ```
 SQL-Quest/
 ├── create_tables.sql
-├── 2026 07 14_Basics and Aggregations.sql
-├── 2026 07 15 SQL Joins.sql
-├── 2026 07 16 subqueries.sql
-├── 2026 07 17 ctes window functions.sql
-├── 2026 07 20 window functions.sql
-├── 2026 07 21 advanced window functions.sql
-├── 2026 08 05 advanced window functions.sql
-├── 2026 08 07 top_customers_and_products_window_functions.sql
+├── 2026-07-14_basics_aggregations.sql
+├── 2026-07-15_joins.sql
+├── 2026-07-16_subqueries.sql
+├── 2026-07-17_ctes_window_functions.sql
+├── 2026-07-20_window_functions.sql
+├── 2026-07-21_advanced_window_functions.sql
+├── 2026-08-10_case_dates_analytics.sql
+└── ...
 ```
 
 **Naming Convention**
@@ -98,7 +98,9 @@ source 2026-07-20_window_functions.sql;
 
 - INNER JOIN
 - LEFT JOIN
+- CROSS JOIN
 - Multi-table Joins
+- LEFT JOIN + IS NULL (anti-join pattern)
 
 ## Subqueries
 
@@ -119,6 +121,7 @@ source 2026-07-20_window_functions.sql;
 - Chained CTEs
 - CTE with Window Functions
 - CTE + Aggregations
+- CTE + CROSS JOIN against an aggregate
 
 ## Window Functions
 
@@ -168,11 +171,18 @@ source 2026-07-20_window_functions.sql;
 - ROWS BETWEEN ... PRECEDING AND CURRENT ROW
 - ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
 
+## CASE Statements
+
+- CASE WHEN ... THEN ... ELSE ... END
+- Categorizing rows based on an aggregate (e.g. VIP / Regular / Low Value by spend)
+
 ## Date Functions
 
 - DATEDIFF()
+- DATE_FORMAT() (bucketing dates into year-month groups)
 - Order Gap Analysis
 - Days Until Next Order
+- Month-over-month comparisons
 
 ---
 
@@ -186,6 +196,7 @@ source 2026-07-20_window_functions.sql;
 | 2026-07-17 | `2026-07-17_ctes_window_functions.sql` | CTEs, AVG() OVER(), RANK(), ROW_NUMBER(), LAG(), PARTITION BY |
 | 2026-07-20 | `2026-07-20_window_functions.sql` | LEAD(), Running Total, Moving Average, Date Difference, Window Frames |
 | 2026-07-21 | `2026-07-21_advanced_window_functions.sql` | FIRST_VALUE(), LAST_VALUE(), NTH_VALUE(), NTILE(), CUME_DIST(), PERCENT_RANK(), combined RANK/DENSE_RANK/LAG across joined CTEs |
+| 2026-08-10 | `2026-08-10_case_dates_analytics.sql` | LEFT JOIN + IS NULL, CTE + CROSS JOIN vs. average, HAVING + COUNT(DISTINCT), EXISTS with joined condition, CASE WHEN categorization, DATEDIFF(), DATE_FORMAT(), month-over-month LAG() |
 
 ---
 
@@ -220,6 +231,13 @@ source 2026-07-20_window_functions.sql;
 - Orders that don't have a payment yet
 - Revenue per category using a multi-table join + GROUP BY
 - Number of distinct products each customer has bought
+- Customers with above-average order count, using CROSS JOIN against an aggregate CTE
+- First order date, last order date, and days between them per customer
+- Cities with 3 or more distinct customers
+- Customers who made at least one payment over a threshold, via EXISTS
+- Categorizing customers as VIP / Regular / Low Value by total spend
+- Monthly revenue and order count using DATE_FORMAT()
+- Month-over-month revenue change using LAG()
 
 ---
 
