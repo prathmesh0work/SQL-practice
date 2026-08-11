@@ -36,11 +36,12 @@ SQL-Quest/
 ├── 2026-07-17_ctes_window_functions.sql
 ├── 2026-07-20_window_functions.sql
 ├── 2026-07-21_advanced_window_functions.sql
-├── 2026 08 05_Advanced_Window_functions.sql
-├── 2026 08 07_top_customers_and_products_window_functions.sql
-├── 2026 08 10_case_dates_analytics.sql
-├── 2026 08 11 datalemur easy.sql
-|__```
+├── 2026-08-05_advanced_window_functions.sql
+├── 2026-08-07_top_customers_and_products_window_functions.sql
+├── 2026-08-10_case_dates_analytics.sql
+├── 2026-08-11_datalemur-easy.sql
+└── README.md
+```
 
 **Naming Convention**
 
@@ -186,6 +187,18 @@ source 2026-07-20_window_functions.sql;
 - Days Until Next Order
 - Month-over-month comparisons
 
+## Interview-Style Practice (DataLemur)
+
+- Histogram / bucketing aggregations
+- Multi-skill candidate filtering with HAVING COUNT(DISTINCT ...)
+- Anti-join patterns (LEFT JOIN + IS NULL) for "never happened" questions
+- Device/category comparison with conditional SUM(CASE WHEN ...)
+- Per-user gap analysis with LAG() + DATEDIFF()
+- Top-N ranking per group
+- Duplicate detection via GROUP BY + HAVING COUNT(*) > 1
+- Multi-condition filtering with JOIN + HAVING
+- Monthly aggregation with EXTRACT()/DATE_FORMAT()
+
 ---
 
 # 📝 Practice Sessions
@@ -199,6 +212,7 @@ source 2026-07-20_window_functions.sql;
 | 2026-07-20 | `2026-07-20_window_functions.sql` | LEAD(), Running Total, Moving Average, Date Difference, Window Frames |
 | 2026-07-21 | `2026-07-21_advanced_window_functions.sql` | FIRST_VALUE(), LAST_VALUE(), NTH_VALUE(), NTILE(), CUME_DIST(), PERCENT_RANK(), combined RANK/DENSE_RANK/LAG across joined CTEs |
 | 2026-08-10 | `2026-08-10_case_dates_analytics.sql` | LEFT JOIN + IS NULL, CTE + CROSS JOIN vs. average, HAVING + COUNT(DISTINCT), EXISTS with joined condition, CASE WHEN categorization, DATEDIFF(), DATE_FORMAT(), month-over-month LAG() |
+| 2026-08-11 | `2026-08-11_datalemur-easy.sql` | 10 DataLemur Easy interview questions (Twitter, LinkedIn ×2, Facebook ×2, Tesla, NY Times, Microsoft, Robinhood, Amazon) — histograms, anti-joins, HAVING COUNT(DISTINCT), conditional SUM(CASE WHEN), LAG() + DATEDIFF(), Top-N, duplicate detection, monthly aggregation |
 
 ---
 
@@ -240,6 +254,16 @@ source 2026-07-20_window_functions.sql;
 - Categorizing customers as VIP / Regular / Low Value by total spend
 - Monthly revenue and order count using DATE_FORMAT()
 - Month-over-month revenue change using LAG()
+- Histogram of tweet counts per user (Twitter)
+- Candidates matching an exact multi-skill set (LinkedIn)
+- Pages that have never received a like (Facebook)
+- Parts started but never finished (Tesla)
+- Laptop vs. mobile/tablet viewership comparison (NY Times)
+- Average gap between consecutive posts per user (Facebook)
+- Top message senders within a date range (Microsoft)
+- Companies with duplicate job listings (LinkedIn)
+- Cities with 5+ completed trades (Robinhood)
+- Average product review rating by month (Amazon)
 
 ---
 
