@@ -39,6 +39,7 @@ SQL-Quest/
 ├── 2026 08 05_Advanced_Window_functions.sql
 ├── 2026 08 07_top_customers_and_products_window_functions.sql
 ├── 2026-08-10_case_dates_analytics.sql
+├──
 |__```
 
 **Naming Convention**
