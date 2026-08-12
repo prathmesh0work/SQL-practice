@@ -29,6 +29,7 @@ The database contains six related tables that model a simple online store.
 
 ```
 SQL-Quest/
+
 ├── create_tables.sql
 ├── 2026-07-14_basics_aggregations.sql
 ├── 2026-07-15_joins.sql
@@ -36,7 +37,10 @@ SQL-Quest/
 ├── 2026-07-17_ctes_window_functions.sql
 ├── 2026-07-20_window_functions.sql
 ├── 2026-07-21_advanced_window_functions.sql
+├── 2026-08-05_advanced_window_functions.sql
+├── 2026-08-07_top_customers_and_products_window_functions.sql
 ├── 2026-08-10_case_dates_analytics.sql
+├── 2026-08-11_datalemur-easy.sql
 ├── 2026-08-12_self_joins_advanced_analytics.sql
 └── ...
 ```
