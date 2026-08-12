@@ -36,11 +36,9 @@ SQL-Quest/
 ├── 2026-07-17_ctes_window_functions.sql
 ├── 2026-07-20_window_functions.sql
 ├── 2026-07-21_advanced_window_functions.sql
-├── 2026-08-05_advanced_window_functions.sql
-├── 2026-08-07_top_customers_and_products_window_functions.sql
 ├── 2026-08-10_case_dates_analytics.sql
-├── 2026-08-11_datalemur-easy.sql
-└── README.md
+├── 2026-08-12_self_joins_advanced_analytics.sql
+└── ...
 ```
 
 **Naming Convention**
@@ -104,6 +102,7 @@ source 2026-07-20_window_functions.sql;
 - CROSS JOIN
 - Multi-table Joins
 - LEFT JOIN + IS NULL (anti-join pattern)
+- Self-Joins (matching rows within the same table)
 
 ## Subqueries
 
@@ -179,6 +178,16 @@ source 2026-07-20_window_functions.sql;
 - CASE WHEN ... THEN ... ELSE ... END
 - Categorizing rows based on an aggregate (e.g. VIP / Regular / Low Value by spend)
 
+## NULL-Safe Functions
+
+- COALESCE() — substituting a default for a NULL aggregate
+- NULLIF() — avoiding divide-by-zero in an average calculation
+
+## Analytical Patterns
+
+- Top-N-per-group (RANK() partitioned by a category, filtered via a wrapping CTE)
+- Retention-style analysis combining LAG(), ROW_NUMBER(), DATEDIFF(), and CROSS JOIN against an aggregate across several chained CTEs
+
 ## Date Functions
 
 - DATEDIFF()
@@ -186,18 +195,6 @@ source 2026-07-20_window_functions.sql;
 - Order Gap Analysis
 - Days Until Next Order
 - Month-over-month comparisons
-
-## Interview-Style Practice (DataLemur)
-
-- Histogram / bucketing aggregations
-- Multi-skill candidate filtering with HAVING COUNT(DISTINCT ...)
-- Anti-join patterns (LEFT JOIN + IS NULL) for "never happened" questions
-- Device/category comparison with conditional SUM(CASE WHEN ...)
-- Per-user gap analysis with LAG() + DATEDIFF()
-- Top-N ranking per group
-- Duplicate detection via GROUP BY + HAVING COUNT(*) > 1
-- Multi-condition filtering with JOIN + HAVING
-- Monthly aggregation with EXTRACT()/DATE_FORMAT()
 
 ---
 
@@ -212,7 +209,7 @@ source 2026-07-20_window_functions.sql;
 | 2026-07-20 | `2026-07-20_window_functions.sql` | LEAD(), Running Total, Moving Average, Date Difference, Window Frames |
 | 2026-07-21 | `2026-07-21_advanced_window_functions.sql` | FIRST_VALUE(), LAST_VALUE(), NTH_VALUE(), NTILE(), CUME_DIST(), PERCENT_RANK(), combined RANK/DENSE_RANK/LAG across joined CTEs |
 | 2026-08-10 | `2026-08-10_case_dates_analytics.sql` | LEFT JOIN + IS NULL, CTE + CROSS JOIN vs. average, HAVING + COUNT(DISTINCT), EXISTS with joined condition, CASE WHEN categorization, DATEDIFF(), DATE_FORMAT(), month-over-month LAG() |
-| 2026-08-11 | `2026-08-11_datalemur-easy.sql` | 10 DataLemur Easy interview questions (Twitter, LinkedIn ×2, Facebook ×2, Tesla, NY Times, Microsoft, Robinhood, Amazon) — histograms, anti-joins, HAVING COUNT(DISTINCT), conditional SUM(CASE WHEN), LAG() + DATEDIFF(), Top-N, duplicate detection, monthly aggregation |
+| 2026-08-12 | `2026-08-12_self_joins_advanced_analytics.sql` | COALESCE + NULLIF for null-safe averages, HAVING with multiple conditions, self-joins, RANK() top-N-per-category, multi-CTE retention analysis (LAG + ROW_NUMBER + DATEDIFF + CROSS JOIN) |
 
 ---
 
@@ -254,16 +251,12 @@ source 2026-07-20_window_functions.sql;
 - Categorizing customers as VIP / Regular / Low Value by total spend
 - Monthly revenue and order count using DATE_FORMAT()
 - Month-over-month revenue change using LAG()
-- Histogram of tweet counts per user (Twitter)
-- Candidates matching an exact multi-skill set (LinkedIn)
-- Pages that have never received a like (Facebook)
-- Parts started but never finished (Tesla)
-- Laptop vs. mobile/tablet viewership comparison (NY Times)
-- Average gap between consecutive posts per user (Facebook)
-- Top message senders within a date range (Microsoft)
-- Companies with duplicate job listings (LinkedIn)
-- Cities with 5+ completed trades (Robinhood)
-- Average product review rating by month (Amazon)
+- Average order value including customers with zero orders (COALESCE + NULLIF)
+- Customers with 2+ orders and total spending over a threshold, combined in one HAVING
+- Pairs of customers who placed an order on the same date (self-join)
+- Best-selling product in each category (RANK top-N-per-group)
+- Re-engaging customers: 3+ orders, above-average spend, last two orders within 30 days
+- Each customer's most expensive product by total spending
 
 ---
 
