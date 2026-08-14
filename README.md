@@ -42,6 +42,8 @@ SQL-Quest/
 ├── 2026-08-10_case_dates_analytics.sql
 ├── 2026-08-11_datalemur-easy.sql
 ├── 2026-08-12_self_joins_advanced_analytics.sql
+├──
+├──
 └── ...
 ```
 
