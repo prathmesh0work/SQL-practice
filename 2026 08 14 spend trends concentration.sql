@@ -281,19 +281,8 @@ WHERE cs.unique_categories >= 2
   AND rc.category_spending / cs.total_spending * 100 > 60
 ORDER BY category_percentage DESC;
 
-
-
--- ============================================================
--- Session: 2026-08-14
--- Topic: Spend Trends & Concentration Analysis
--- Concepts: CTEs, aggregate window functions, ROW_NUMBER(),
---           LAG(), COUNT() OVER(), revenue concentration ratios
--- ============================================================
-
-USE sql_quest;
-
 -- ------------------------------------------------------------
--- Problem 1: Products that make up more than 20% of their
+-- 6 : Products that make up more than 20% of their
 -- category's total revenue (revenue concentration by product).
 -- ------------------------------------------------------------
 WITH product_revenue AS (
@@ -338,7 +327,7 @@ ORDER BY
 
 
 -- ------------------------------------------------------------
--- Problem 2: Customers (with 3+ orders) whose latest order
+-- 7 : Customers (with 3+ orders) whose latest order
 -- value increased compared to their previous order, ranked by
 -- the percentage increase.
 -- ------------------------------------------------------------
