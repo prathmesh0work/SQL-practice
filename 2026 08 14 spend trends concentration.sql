@@ -280,3 +280,112 @@ WHERE cs.unique_categories >= 2
   AND rc.category_rank = 1
   AND rc.category_spending / cs.total_spending * 100 > 60
 ORDER BY category_percentage DESC;
+
+
+
+-- ============================================================
+-- Session: 2026-08-14
+-- Topic: Spend Trends & Concentration Analysis
+-- Concepts: CTEs, aggregate window functions, ROW_NUMBER(),
+--           LAG(), COUNT() OVER(), revenue concentration ratios
+-- ============================================================
+
+USE sql_quest;
+
+-- ------------------------------------------------------------
+-- Problem 1: Products that make up more than 20% of their
+-- category's total revenue (revenue concentration by product).
+-- ------------------------------------------------------------
+WITH product_revenue AS (
+    SELECT
+        p.product_id,
+        p.product_name,
+        p.category_id,
+        c.category_name,
+        SUM(p.price * oi.quantity) AS product_revenue
+    FROM products p
+    JOIN categories c
+        ON p.category_id = c.category_id
+    JOIN order_items oi
+        ON p.product_id = oi.product_id
+    GROUP BY
+        p.product_id,
+        p.product_name,
+        p.category_id,
+        c.category_name
+),
+category_revenue AS (
+    SELECT
+        category_id,
+        SUM(product_revenue) AS category_revenue
+    FROM product_revenue
+    GROUP BY category_id
+)
+SELECT
+    p.product_id,
+    p.product_name,
+    p.category_name AS category,
+    p.product_revenue,
+    c.category_revenue,
+    p.product_revenue / c.category_revenue * 100 AS revenue_percentage
+FROM product_revenue p
+JOIN category_revenue c
+    ON p.category_id = c.category_id
+WHERE p.product_revenue / c.category_revenue * 100 > 20
+ORDER BY
+    p.category_name,
+    revenue_percentage DESC;
+
+
+-- ------------------------------------------------------------
+-- Problem 2: Customers (with 3+ orders) whose latest order
+-- value increased compared to their previous order, ranked by
+-- the percentage increase.
+-- ------------------------------------------------------------
+WITH customer_orders AS (
+    SELECT
+        c.customer_id,
+        c.customer_name,
+        o.order_id,
+        o.order_date,
+        p.amount AS order_value,
+        ROW_NUMBER() OVER (
+            PARTITION BY c.customer_id
+            ORDER BY o.order_date DESC
+        ) AS rn,
+        LAG(p.amount) OVER (
+            PARTITION BY c.customer_id
+            ORDER BY o.order_date DESC
+        ) AS previous_order_value,
+        COUNT(*) OVER (
+            PARTITION BY c.customer_id
+        ) AS order_count
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    JOIN payments p
+        ON o.order_id = p.order_id
+),
+latest_orders AS (
+    SELECT
+        customer_id,
+        customer_name,
+        order_id AS latest_order_id,
+        order_value AS latest_order_value,
+        previous_order_value,
+        100.0 * (order_value - previous_order_value)
+            / previous_order_value AS increase_percentage
+    FROM customer_orders
+    WHERE rn = 1
+      AND order_count >= 3
+)
+SELECT
+    customer_id,
+    customer_name,
+    latest_order_id,
+    latest_order_value,
+    previous_order_value,
+    increase_percentage
+FROM latest_orders
+WHERE latest_order_value > previous_order_value
+ORDER BY increase_percentage DESC;
