@@ -1,4 +1,4 @@
-# SQL Quest — Advanced SQL Practice
+# SQL Quest — Advanced SQL Practic
 
 A hands-on MySQL practice repository where I solve SQL problems daily using a realistic e-commerce database. The repository documents my learning journey through progressively advanced SQL concepts, with each practice session saved as a separate SQL file.
 
